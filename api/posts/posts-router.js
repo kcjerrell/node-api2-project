@@ -35,7 +35,7 @@ router.get('/', async (req, res) => {
 	} catch (err) {
 		res.status(500).json({ message: err.message })
 	}
-});
+})
 
 router.get('/:id', async (req, res) => {
 	try {
@@ -47,12 +47,12 @@ router.get('/:id', async (req, res) => {
 	} catch (err) {
 		res.status(500).json({ message: err.message })
 	}
-});
+})
 
 router.post('/', async (req, res) => {
 	if (!verifyPost(req.body)) {
 		res.status(400).json({ message: "Please provide title and contents for the post" })
-		return;
+		return
 	}
 
 	const post = makePost(req.body)
@@ -65,12 +65,12 @@ router.post('/', async (req, res) => {
 	} catch (err) {
 		res.status(500).json({ message: err.message })
 	}
-});
+})
 
 router.put('/:id', async (req, res) => {
 	if (!verifyPost(req.body)) {
 		res.status(400).json({ message: "Please provide title and contents for the post" })
-		return;
+		return
 	}
 
 	const post = makePost(req.body)
@@ -89,7 +89,7 @@ router.put('/:id', async (req, res) => {
 	} catch (err) {
 		res.status(500).json({ message: err.message })
 	}
-});
+})
 
 router.delete('/:id', async (req, res) => {
 	try {
@@ -105,11 +105,23 @@ router.delete('/:id', async (req, res) => {
 		if (result)
 			res.status(200).json(post)
 		else
-			res.status(400).json({ message: "uh, it was there a second ago" });
+			res.status(400).json({ message: "uh, it was there a second ago" })
 
 	} catch (err) {
 		res.status(500).json({ message: err.message })
 	}
-});
+})
 
-module.exports = router;
+router.get('/:id/comments', async (req, res) => {
+	try {
+		const result = await api.findPostComments(req.params.id)
+		if (result.length)
+			res.status(200).json(result)
+		else
+			res.status(404).json(NOT_FOUND_RESPONSE)
+	} catch (err) {
+		res.status(500).json({ message: err.message })
+	}
+})
+
+module.exports = router
